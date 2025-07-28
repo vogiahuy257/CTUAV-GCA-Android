@@ -1,0 +1,133 @@
+name: Linux
+
+on:
+  push:
+    branches:
+      - master
+      - 'Stable*'
+    tags:
+      - 'v*'
+    paths-ignore:
+      - 'docs/**' # Do not trigger for any changes under docs
+  pull_request:
+    paths:
+      - '.github/workflows/linux.yml'
+      - '.github/actions/**'
+      - 'deploy/linux/**'
+      - 'src/**'
+      - 'test/**'
+      - 'CMakeLists.txt'
+      - 'cmake/**'
+
+# concurrency:
+#   group: ${{ github.workflow }}-${{ github.ref }}
+#   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runs-on }}
+
+    strategy:
+      matrix:
+        BuildType: [Debug, Release]
+        runs-on: [ubuntu-24.04-arm, ubuntu-22.04]
+        include:
+          - runs-on: ubuntu-24.04-arm
+            ARTIFACT: QGroundControl-aarch64.AppImage
+            PACKAGE: QGroundControl-aarch64
+            host: linux_arm64
+            arch: linux_gcc_arm64
+          - runs-on: ubuntu-22.04
+            ARTIFACT: QGroundControl-x86_64.AppImage
+            PACKAGE: QGroundControl-x86_64
+            host: linux
+            arch: linux_gcc_64
+        exclude:
+          - runs-on: ubuntu-24.04-arm
+            BuildType: Debug
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      QT_VERSION: 6.8.3
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 1
+          fetch-tags: false
+
+      - name: Get all tags for correct version determination
+        working-directory: ${{ github.workspace }}
+        run: |
+          git fetch --all --tags -f --depth 1
+
+      - name: Initial Setup
+        uses: ./.github/actions/common
+
+      - name: Install Dependencies
+        run: |
+          chmod a+x ./tools/setup/install-dependencies-debian.sh
+          sudo ./tools/setup/install-dependencies-debian.sh
+
+      - name: Setup Caching
+        if: ${{ matrix.arch == 'linux_gcc_64' }}
+        uses: ./.github/actions/cache
+        with:
+          host: ${{ matrix.host }}
+          target: ${{ matrix.arch }}
+          build-type: ${{ matrix.BuildType }}
+          cpm-modules: ${{ runner.temp }}/shadow_build_dir/cpm_modules
+
+      - name: Install Qt for Linux
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: ${{ env.QT_VERSION }}
+          host: ${{ matrix.host }}
+          target: desktop
+          arch: ${{ matrix.arch }}
+          dir: ${{ runner.temp }}
+          modules: qtcharts qtlocation qtpositioning qtspeech qt5compat qtmultimedia qtserialport qtimageformats qtshadertools qtconnectivity qtquick3d qtsensors
+          cache: true
+
+      # - name: Build GStreamer
+      #   uses: ./.github/actions/gstreamer
+
+      - name: Configure
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: ${{ env.QT_ROOT_DIR }}/bin/qt-cmake -S ${{ github.workspace }} -B . -G Ninja
+              -DCMAKE_BUILD_TYPE=${{ matrix.BuildType }}
+              -DQGC_BUILD_TESTING=${{ matrix.BuildType == 'Debug' && 'ON' || 'OFF' }}
+              -DQGC_STABLE_BUILD=${{ github.ref_type == 'tag' || contains(github.ref, 'Stable') && 'ON' || 'OFF' }}
+
+      - name: Build
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: cmake --build . --target all --config ${{ matrix.BuildType }}
+
+      - name: Create AppImage
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: cmake --install . --config ${{ matrix.BuildType }}
+
+      - name: Sanity check release excecutable
+        if: matrix.BuildType == 'Release'
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: xvfb-run -a ./${{ matrix.ARTIFACT }} --simple-boot-test
+
+      - name: Run unit tests
+        if: matrix.BuildType == 'Debug'
+        working-directory: ${{ runner.temp }}/shadow_build_dir
+        run: xvfb-run -a ./${{ matrix.ARTIFACT }} --unittest
+
+      - name: Upload Build File
+        if: matrix.BuildType == 'Release'
+        uses: ./.github/actions/upload
+        with:
+          artifact_name: ${{ matrix.ARTIFACT }}
+          package_name: ${{ matrix.PACKAGE }}
+          aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}

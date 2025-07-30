@@ -66,7 +66,7 @@ Rectangle {
                 property string tabId: "MAPPING"
                 defaultColor: "transparent"
                 activeColor: "#d1222222"
-                width: _root.buttonWidth - 10
+                width: _root.buttonWidth + 20
                 height: _root.buttonHeight
                 radius: 6
                 bold: true

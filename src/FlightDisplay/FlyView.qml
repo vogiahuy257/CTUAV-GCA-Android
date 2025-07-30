@@ -85,7 +85,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.margins: 10
         spacing: 10
-        visible: true // _activeVehicle.vehicleType === "Mock Link"
+        visible: currentTab === "FIRE FIGHTING"
         z: 100
 
         QGCButton {
@@ -103,9 +103,6 @@ Item {
                         new Date(2025, 6, 11, 8, 30, 0)
                     )
                 }
-                
-
-
             }
         }
 

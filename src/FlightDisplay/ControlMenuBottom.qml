@@ -128,7 +128,7 @@ Rectangle {
 
                 ItemButton {
                     id: defineAreaBtn
-                    width: pixel * 2 + 6
+                    width: pixel * 2 + 12
                     height: pixel
                     radius: 4
                     fontSize: _root.fontSize
@@ -139,7 +139,7 @@ Rectangle {
 
                 ItemButton {
                     id: calcGridBtn
-                    width: pixel * 2 + 6
+                    width: pixel * 2 + 12
                     height: pixel
                     radius: 4
                     fontSize: _root.fontSize
@@ -153,7 +153,7 @@ Rectangle {
                 spacing: 6
                 ItemButton {
                     id: startMappingBtn
-                    width: pixel * 2 + 6
+                    width: pixel * 2 + 12
                     height: pixel
                     radius: 4
                     fontSize: _root.fontSize
@@ -164,7 +164,7 @@ Rectangle {
 
                 ItemButton {
                     id: cancelMissionBtn
-                    width: pixel * 2 + 6
+                    width: pixel * 2 + 12
                     height: pixel
                     radius: 4
                     fontSize: _root.fontSize

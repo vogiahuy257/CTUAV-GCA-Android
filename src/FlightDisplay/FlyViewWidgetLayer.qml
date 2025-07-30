@@ -58,16 +58,16 @@ Item {
         id:                     _totalToolInsets
         leftEdgeTopInset:       toolStrip.leftEdgeTopInset
         leftEdgeCenterInset:    toolStrip.leftEdgeCenterInset
-        leftEdgeBottomInset:    virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.leftEdgeBottomInset : parentToolInsets.leftEdgeBottomInset
+        leftEdgeBottomInset:     parentToolInsets.leftEdgeBottomInset // virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.leftEdgeBottomInset :
         rightEdgeTopInset:      topRightPanel.rightEdgeTopInset
         rightEdgeCenterInset:   topRightPanel.rightEdgeCenterInset
         rightEdgeBottomInset:   bottomRightRowLayout.rightEdgeBottomInset
         topEdgeLeftInset:       toolStrip.topEdgeLeftInset
         topEdgeCenterInset:     mapScale.topEdgeCenterInset
         topEdgeRightInset:      topRightPanel.topEdgeRightInset
-        bottomEdgeLeftInset:    virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.bottomEdgeLeftInset : parentToolInsets.bottomEdgeLeftInset
+        bottomEdgeLeftInset:    parentToolInsets.bottomEdgeLeftInset // virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.bottomEdgeLeftInset : 
         bottomEdgeCenterInset:  bottomRightRowLayout.bottomEdgeCenterInset
-        bottomEdgeRightInset:   virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.bottomEdgeRightInset : bottomRightRowLayout.bottomEdgeRightInset
+        bottomEdgeRightInset:    bottomRightRowLayout.bottomEdgeRightInset // virtualJoystickMultiTouch.visible ? virtualJoystickMultiTouch.bottomEdgeRightInset :
     }
 
     Rectangle {
@@ -166,7 +166,7 @@ Item {
         z:                          QGroundControl.zOrderTopMost + 1
         anchors.right:              parent.right
         anchors.rightMargin:        anchors.leftMargin
-        height:                     Math.min(parent.height * 0.25, ScreenTools.defaultFontPixelWidth * 16)
+        height:                     ScreenTools.defaultFontPixelWidth * 16
         visible:                    _virtualJoystickEnabled && !QGroundControl.videoManager.fullScreen && !(_activeVehicle ? _activeVehicle.usingHighLatencyLink : false)
         anchors.bottom:             parent.bottom
         anchors.bottomMargin:       bottomLoaderMargin

@@ -819,44 +819,44 @@ FontLoader {
     // We have to create the popup windows for the Analyze pages here so that the creation context is rooted
     // to mainWindow. Otherwise if they are rooted to the AnalyzeView itself they will die when the analyze viewSwitch
     // closes.
- Button {
-        text: "Open Long Dialog"
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.margins: 20
+//  Button {
+//         text: "Open Long Dialog"
+//         anchors.bottom: parent.bottom
+//         anchors.left: parent.left
+//         anchors.margins: 20
 
-        onClicked: {
-            var popup = Qt.createQmlObject(`
-                import QtQuick 2.15
-                import QGroundControl.Controls
-                import QGroundControl
+//         onClicked: {
+//             var popup = Qt.createQmlObject(`
+//                 import QtQuick 2.15
+//                 import QGroundControl.Controls
+//                 import QGroundControl
 
-                QGCPopupDialog {
-                    title: "Test Popup with Long Content"
+//                 QGCPopupDialog {
+//                     title: "Test Popup with Long Content"
 
-                    Column {
-                        spacing: 10
-                        Repeater {
-                            model: 50
-                            delegate: QGCLabel {
-                                text: "This is a long content line number: " + index
-                                wrapMode: Text.Wrap
-                            }
-                        }
-                    }
+//                     Column {
+//                         spacing: 10
+//                         Repeater {
+//                             model: 50
+//                             delegate: QGCLabel {
+//                                 text: "This is a long content line number: " + index
+//                                 wrapMode: Text.Wrap
+//                             }
+//                         }
+//                     }
 
-                    onAccepted: console.log("Dialog accepted")
-                    onRejected: console.log("Dialog rejected")
-                }
-            `, mainWindow, "dynamicDialog")
+//                     onAccepted: console.log("Dialog accepted")
+//                     onRejected: console.log("Dialog rejected")
+//                 }
+//             `, mainWindow, "dynamicDialog")
 
-            if (popup !== null) {
-                popup.open()
-            } else {
-                console.error("Failed to create dialog")
-            }
-        }
-    }
+//             if (popup !== null) {
+//                 popup.open()
+//             } else {
+//                 console.error("Failed to create dialog")
+//             }
+//         }
+//     }
 
     function createrWindowedAnalyzePage(title, source) {
         var windowedPage = windowedAnalyzePage.createObject(mainWindow)

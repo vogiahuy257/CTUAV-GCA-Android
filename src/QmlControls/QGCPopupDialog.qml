@@ -198,7 +198,7 @@ Popup {
         y:              mainLayout.y - _contentMargin
         width:          mainLayout.width + _contentMargin * 2
         height:         mainLayout.height + _contentMargin * 2
-        color:          _qgcPal.windowShade
+        color:            _qgcPal.window
         radius:         root.padding / 2
         border.width:   1
         border.color:   _qgcPal.windowShadeLight
@@ -243,7 +243,9 @@ Popup {
             Layout.preferredWidth:  Math.min(maxAvailableWidth, totalContentWidth)
             Layout.preferredHeight: Math.min(maxAvailableHeight, totalContentHeight)
             Layout.maximumHeight:   mainWindow.height * 0.6
-            color:                  _qgcPal.window
+            Layout.maximumWidth: mainWindow.width * 0.6
+            radius: 8
+            color:                  _qgcPal.windowShade
 
             property real maxAvailableWidth:    mainWindow.width - _contentMargin * 4
             property real maxAvailableHeight:   mainWindow.height - titleRowLayout.height - _contentMargin * 5
@@ -255,6 +257,7 @@ Popup {
                 anchors.fill:       parent
                 contentWidth:       dialogContentParent.childrenRect.width
                 contentHeight:      dialogContentParent.childrenRect.height
+                clip : true
 
                 Item {
                     id:     dialogContentParent

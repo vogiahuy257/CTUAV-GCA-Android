@@ -180,8 +180,8 @@ Rectangle {
                                 anchors.left: parent.left
                                 anchors.verticalCenter: parent.verticalCenter
                                 spacing: ScreenTools.defaultFontPixelHeight / 2
-                                implicitHeight: Math.max(selectionRowLayout.height, actionRowLayout.height) + ScreenTools.defaultFontPixelHeight * 2
-                                implicitWidth: Math.max(selectionRowLayout.width, actionRowLayout.width) + ScreenTools.defaultFontPixelHeight * 4
+                                implicitHeight: Math.max(selectionRowLayout.height, actionGridLayout.height) + ScreenTools.defaultFontPixelHeight * 2
+                                implicitWidth: Math.max(selectionRowLayout.width, actionGridLayout.width) + ScreenTools.defaultFontPixelHeight * 4
 
                                 QGCLabel {
                                     text: qsTr("Multi Vehicle Selection")
